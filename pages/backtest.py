@@ -75,16 +75,11 @@ def backtest() -> rx.Component:
                         rx.vstack(
                             rx.text("Total Return", size="2", color="gray"),
                             rx.heading(
-                                rx.text.span(State.backtest_results["total_return_pct"], " %"),
+                                State.backtest_results["total_return_pct"],
                                 size="7",
-                                color=rx.cond(
-                                    State.backtest_results["total_return_pct"] >= 0,
-                                    "green",
-                                    "red"
-                                )
                             ),
                             rx.text(
-                                f"${State.backtest_results['total_return']:.2f}",
+                                State.backtest_results["total_return"],
                                 size="2"
                             ),
                             align="start",
@@ -111,9 +106,8 @@ def backtest() -> rx.Component:
                         rx.vstack(
                             rx.text("Max Drawdown", size="2", color="gray"),
                             rx.heading(
-                                rx.text.span(State.backtest_results["max_drawdown"], " %"),
+                                State.backtest_results["max_drawdown"],
                                 size="7",
-                                color="red"
                             ),
                             rx.text("Largest peak-to-trough", size="2"),
                             align="start",
@@ -126,11 +120,11 @@ def backtest() -> rx.Component:
                         rx.vstack(
                             rx.text("Win Rate", size="2", color="gray"),
                             rx.heading(
-                                rx.text.span(State.backtest_results["win_rate"], " %"),
+                                State.backtest_results["win_rate"],
                                 size="7"
                             ),
                             rx.text(
-                                rx.text.span(State.backtest_results["num_trades"], " trades"),
+                                State.backtest_results["num_trades"],
                                 size="2"
                             ),
                             align="start",
@@ -171,6 +165,16 @@ def backtest() -> rx.Component:
                     State.backtest_trades,
                     rx.data_table(
                         data=State.backtest_trades,
+                        columns=[
+                            {"title": "Ticker", "field": "ticker"},
+                            {"title": "Entry Date", "field": "entry_date"},
+                            {"title": "Exit Date", "field": "exit_date"},
+                            {"title": "Entry Price", "field": "entry_price"},
+                            {"title": "Exit Price", "field": "exit_price"},
+                            {"title": "Quantity", "field": "quantity"},
+                            {"title": "P&L", "field": "pnl"},
+                            {"title": "P&L %", "field": "pnl_pct"},
+                        ],
                         pagination=True,
                         search=True,
                         sort=True,
