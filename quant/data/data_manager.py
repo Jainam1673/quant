@@ -5,6 +5,9 @@ import polars as pl
 from datetime import datetime, timedelta
 from typing import Optional
 from .database import Database
+from quant.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class DataManager:
@@ -35,20 +38,41 @@ class DataManager:
             
         Returns:
             Polars DataFrame with OHLCV data
+            
+        Raises:
+            ValueError: If ticker is invalid or no data is found
         """
+        if not ticker or not isinstance(ticker, str):
+            raise ValueError("Invalid ticker: must be a non-empty string")
+        
+        ticker = ticker.upper().strip()
+        
         # Check if we have recent data in cache
         if not force_update:
-            cached_data = self.db.get_ohlcv(ticker)
-            if not cached_data.is_empty():
-                last_date = cached_data["timestamp"].max()
-                if (datetime.now() - last_date).days < 1:
-                    return cached_data
+            try:
+                cached_data = self.db.get_ohlcv(ticker)
+                if not cached_data.is_empty():
+                    last_timestamp = cached_data["timestamp"].max()
+                    if last_timestamp:
+                        # Convert to datetime if needed and check age
+                        cache_age = datetime.now() - datetime.fromisoformat(str(last_timestamp))
+                        if cache_age.days < 1:
+                            logger.info(f"Using cached data for {ticker}")
+                            return cached_data
+            except Exception as e:
+                logger.warning(f"Error checking cache for {ticker}: {e}")
         
         # Fetch from yfinance
-        stock = yf.Ticker(ticker)
-        df = stock.history(period=period, interval=interval)
+        try:
+            logger.info(f"Fetching data for {ticker} from yfinance")
+            stock = yf.Ticker(ticker)
+            df = stock.history(period=period, interval=interval)
+        except Exception as e:
+            logger.error(f"Error fetching data from yfinance for {ticker}: {e}")
+            raise ValueError(f"Failed to fetch data for {ticker}: {e}")
         
         if df.empty:
+            logger.error(f"No data found for ticker: {ticker}")
             raise ValueError(f"No data found for ticker: {ticker}")
         
         # Convert to Polars and clean
@@ -82,7 +106,12 @@ class DataManager:
         ])
         
         # Store in database
-        self.db.insert_ohlcv(pl_df)
+        try:
+            self.db.insert_ohlcv(pl_df)
+            logger.info(f"Successfully stored {len(pl_df)} rows for {ticker}")
+        except Exception as e:
+            logger.error(f"Error storing data for {ticker}: {e}")
+            raise
         
         return pl_df
     
@@ -109,7 +138,7 @@ class DataManager:
                 df = self.fetch_and_store(ticker, period, interval)
                 all_data.append(df)
             except Exception as e:
-                print(f"Error fetching {ticker}: {e}")
+                logger.error(f"Error fetching {ticker}: {e}")
                 continue
         
         if not all_data:
@@ -143,6 +172,15 @@ class DataManager:
             
         Returns:
             Latest close price
+            
+        Raises:
+            ValueError: If no data is available
         """
-        df = self.fetch_and_store(ticker, period="1d")
-        return float(df["close"][-1])
+        try:
+            df = self.fetch_and_store(ticker, period="1d")
+            if df.is_empty():
+                raise ValueError(f"No price data available for {ticker}")
+            return float(df["close"][-1])
+        except Exception as e:
+            logger.error(f"Error getting latest price for {ticker}: {e}")
+            raise

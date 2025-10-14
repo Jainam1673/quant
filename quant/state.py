@@ -16,6 +16,9 @@ from quant.strategies import (
 )
 from quant.backtesting import BacktestEngine
 from quant.portfolio import Portfolio
+from quant.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class State(rx.State):
@@ -131,48 +134,48 @@ class State(rx.State):
     def fetch_data(self):
         """Fetch stock data from yfinance and update the state."""
         if not self.ticker:
+            logger.warning("No ticker specified")
             return
 
         self.is_loading = True
         try:
             # Download data using yfinance
+            logger.info(f"Fetching data for {self.ticker}")
             raw_data = yf.download(self.ticker, period="1y")
 
-            if raw_data.empty:
+            if raw_data is None or raw_data.empty:
                 self.is_loading = False
-                print(f"No data found for ticker: {self.ticker}")
+                logger.error(f"No data found for ticker: {self.ticker}")
                 return
 
             # Convert to Polars DataFrame for processing
             polars_df = pl.from_pandas(raw_data.reset_index())
 
-            # Create column definitions for the data table
-            self.table_columns = [
-                rx.data_table.column(
-                    header=col,
-                    accessor_key=str(col),
-                )
-                for col in polars_df.columns
-            ]
-            
             # Convert DataFrame to list of dicts for state storage
-            dict_data = polars_df.with_columns(pl.col("Date").dt.strftime("%Y-%m-%d")).to_dicts()
+            if "Date" in polars_df.columns:
+                dict_data = polars_df.with_columns(pl.col("Date").dt.strftime("%Y-%m-%d")).to_dicts()
+            else:
+                dict_data = polars_df.to_dicts()
+                
             self.data = dict_data
             self.chart_data = dict_data
+            logger.info(f"Successfully fetched {len(dict_data)} rows for {self.ticker}")
 
         except Exception as e:
-            print(f"Error fetching data for {self.ticker}: {e}")
+            logger.error(f"Error fetching data for {self.ticker}: {e}", exc_info=True)
         finally:
             self.is_loading = False
     
     def run_backtest(self):
         """Run backtest on current ticker with selected strategy."""
-        if not self.ticker or not self.data:
+        if not self.ticker:
+            logger.warning("No ticker specified for backtest")
             return
         
         self.backtest_running = True
         try:
             # Fetch data using DataManager
+            logger.info(f"Running backtest for {self.ticker} with {self.selected_strategy} strategy")
             db = Database()
             data_manager = DataManager(db)
             df = data_manager.fetch_and_store(self.ticker, period="1y")
@@ -229,9 +232,13 @@ class State(rx.State):
             
             # Store equity curve
             self.backtest_equity_curve = result.equity_curve.to_dicts()
+            logger.info(f"Backtest completed: {result.num_trades} trades, {result.total_return_pct:.2f}% return")
             
         except Exception as e:
-            print(f"Error running backtest: {e}")
+            logger.error(f"Error running backtest: {e}", exc_info=True)
+            self.backtest_results = {}
+            self.backtest_trades = []
+            self.backtest_equity_curve = []
         finally:
             self.backtest_running = False
     

@@ -1,22 +1,54 @@
-# Quant Dashboard 📊
+# Quant Trading Platform 📊
 
-A modern, interactive stock market dashboard built with Python, featuring real-time stock data visualization and analysis capabilities.
+A **production-ready, full-stack quantitative trading platform** built with Python. Features comprehensive backtesting, portfolio management, risk analytics, and custom strategy building capabilities.
 
-## 🚀 Features
+## 🌟 Key Features
 
-- **Real-time Stock Data**: Fetch and display historical stock data for any ticker symbol
-- **Interactive Charts**: Beautiful area charts with customizable themes
-- **Data Tables**: Comprehensive tabular view of stock metrics
-- **Dark Mode UI**: Modern, eye-friendly dark theme interface
-- **Responsive Design**: Sidebar navigation with clean layout
+### 📈 **Advanced Backtesting**
+- Multi-strategy backtesting engine with realistic position tracking
+- Comprehensive performance metrics (Sharpe, Sortino, Calmar ratios)
+- Trade-by-trade analysis with P&L tracking
+- Equity curve visualization
+- Persistent storage of backtest runs
+
+### 💼 **Portfolio Management**
+- Real-time portfolio tracking and position management
+- Modern Portfolio Theory (MPT) optimization
+- Multiple optimization strategies: Maximum Sharpe, Minimum Volatility, Risk Parity
+- Interactive allocation charts and rebalancing recommendations
+- Portfolio performance analytics
+
+### ⚠️ **Risk Analytics**
+- Value at Risk (VaR) and Conditional VaR (CVaR) calculations
+- Multiple VaR methods: Historical, Parametric, Monte Carlo
+- Correlation matrix analysis
+- Drawdown tracking and visualization
+- Comprehensive risk metrics dashboard
+- Customizable risk limits and alerts
+
+### ⚙️ **Strategy Builder**
+- Interactive custom strategy creation
+- 15+ technical indicators across 4 categories (Trend, Momentum, Volatility, Volume)
+- Visual indicator parameter configuration
+- Entry/Exit condition builder
+- Position sizing and risk management rules
+- Strategy library with save/load functionality
+
+### 📊 **Technical Indicators Library**
+- **Trend**: SMA, EMA, MACD, ADX
+- **Momentum**: RSI, Stochastic, ROC, Williams %R
+- **Volatility**: Bollinger Bands, ATR, Keltner Channel
+- **Volume**: OBV, VWAP, MFI
+- All indicators with configurable parameters
 
 ## 🛠️ Tech Stack
 
-- **[Reflex](https://reflex.dev/)**: Full-stack Python web framework
-- **[yfinance](https://github.com/ranaroussi/yfinance)**: Market data from Yahoo Finance
-- **[Polars](https://pola.rs/)**: Fast dataframe library for data processing
-- **[DuckDB](https://duckdb.org/)**: Embedded analytical database (ready for integration)
-- **[uv](https://github.com/astral-sh/uv)**: Ultra-fast Python package installer
+- **[Reflex](https://reflex.dev/)** 0.8.14+ - Full-stack Python web framework
+- **[yfinance](https://github.com/ranaroussi/yfinance)** - Real-time market data from Yahoo Finance
+- **[Polars](https://pola.rs/)** - Lightning-fast dataframe processing (Rust-based)
+- **[DuckDB](https://duckdb.org/)** - Embedded analytical database for data persistence
+- **[NumPy](https://numpy.org/)** & **[SciPy](https://scipy.org/)** - Numerical computing and optimization
+- **[Python 3.11+](https://www.python.org/)** - Modern Python with type hints
 
 ## 📋 Prerequisites
 
@@ -84,39 +116,140 @@ reflex run --env prod
 
 ```
 quant/
-├── assets/              # Static assets (favicon, images)
+├── assets/              # Static assets
 ├── components/          # Reusable UI components
-│   ├── layout.py       # Main layout wrapper
+│   ├── layout.py       # Main layout decorator
 │   └── sidebar.py      # Navigation sidebar
-├── pages/              # Application pages
-│   └── index.py        # Stock overview page
-├── quant/              # Main application package
-│   ├── __init__.py
-│   ├── quant.py        # Application entry point
-│   ├── state.py        # State management
-│   ├── components/     # Package components
-│   └── pages/          # Package pages
+├── pages/              # Application pages (UI)
+│   ├── index.py        # Dashboard/Home
+│   ├── backtest.py     # Backtesting interface
+│   ├── portfolio.py    # Portfolio management
+│   ├── risk.py         # Risk analytics
+│   └── strategy.py     # Strategy builder
+├── quant/              # Core application package
+│   ├── backtesting/    # Backtesting engine
+│   │   ├── engine.py   # Backtest execution
+│   │   └── metrics.py  # Performance metrics
+│   ├── data/           # Data management
+│   │   ├── database.py    # DuckDB wrapper
+│   │   └── data_manager.py # Data fetching & caching
+│   ├── indicators/     # Technical indicators
+│   │   ├── trend.py    # SMA, EMA, MACD, ADX
+│   │   ├── momentum.py # RSI, Stochastic, ROC
+│   │   ├── volatility.py # Bollinger, ATR, Keltner
+│   │   └── volume.py   # OBV, VWAP, MFI
+│   ├── strategies/     # Trading strategies
+│   │   ├── base.py     # Strategy base class
+│   │   ├── momentum_strategy.py
+│   │   ├── mean_reversion.py
+│   │   └── breakout.py
+│   ├── portfolio/      # Portfolio management
+│   │   ├── portfolio.py # Portfolio class
+│   │   ├── optimizer.py # MPT optimization
+│   │   └── rebalancer.py # Rebalancing logic
+│   ├── risk/           # Risk management
+│   │   ├── metrics.py  # Risk metrics
+│   │   └── var.py      # VaR calculations
+│   ├── utils/          # Utilities
+│   │   ├── logger.py   # Logging setup
+│   │   └── config.py   # Configuration
+│   ├── state.py        # Application state
+│   └── quant.py        # App entry point
+├── tests/              # Unit tests
+│   ├── test_database.py
+│   ├── test_indicators.py
+│   └── conftest.py
+├── .env.example        # Environment variables template
+├── .gitignore          # Git ignore rules
 ├── requirements.txt    # Python dependencies
-├── rxconfig.py        # Reflex configuration
-└── README.md          # This file
+├── pyproject.toml      # Project configuration
+├── rxconfig.py         # Reflex configuration
+└── README.md           # This file
 ```
 
-## 🎨 Features in Detail
+## � Quick Start Guide
 
-### Stock Data Fetching
-- Enter any valid stock ticker (e.g., AAPL, GOOGL, MSFT)
-- Fetches 1 year of historical data
-- Automatic data processing with Polars
+### 1. **Dashboard Overview**
+Navigate to the home page to see:
+- Portfolio value and active strategies count
+- Overall win rate and total trades
+- Quick action cards to navigate features
 
-### Interactive Visualization
-- Area chart showing closing prices over time
-- Responsive and interactive tooltips
-- Customizable chart themes
+### 2. **Run a Backtest**
+1. Go to **Backtesting** page
+2. Enter a ticker symbol (e.g., AAPL)
+3. Select a strategy (Momentum, Mean Reversion, or Breakout)
+4. Click "Run Backtest"
+5. View performance metrics, equity curve, and trade history
 
-### Data Table
-- Displays all available metrics (Open, High, Low, Close, Volume)
-- Scrollable table for large datasets
-- Clean, readable formatting
+### 3. **Manage Portfolio**
+1. Go to **Portfolio** page
+2. Add positions with ticker, quantity, and entry price
+3. View current holdings and allocation
+4. Optimize allocation using MPT methods
+5. Apply rebalancing recommendations
+
+### 4. **Analyze Risk**
+1. Go to **Risk Analysis** page
+2. Calculate VaR/CVaR with different methods
+3. View detailed risk metrics
+4. Analyze correlation matrix
+5. Set risk limits and alerts
+
+### 5. **Build Custom Strategy**
+1. Go to **Strategy Builder** page
+2. Name your strategy
+3. Select technical indicators
+4. Configure indicator parameters
+5. Define entry/exit conditions
+6. Set position sizing and risk rules
+7. Save and test your strategy
+
+## 🧪 Testing
+
+```bash
+# Install dev dependencies
+pip install pytest pytest-cov
+
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=quant --cov-report=html
+
+# Run specific test file
+pytest tests/test_database.py
+
+# Run tests by marker
+pytest -m unit
+pytest -m "not slow"
+```
+
+## 🔧 Configuration
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+# Application
+APP_ENV=development
+LOG_LEVEL=INFO
+
+# Database
+DB_PATH=data/quant.duckdb
+
+# API Keys (if needed)
+# ALPHA_VANTAGE_KEY=your_key_here
+```
+
+## 📊 Performance Metrics
+
+The platform calculates comprehensive metrics:
+
+- **Returns**: Total return, annualized return, return percentage
+- **Risk-Adjusted**: Sharpe ratio, Sortino ratio, Calmar ratio
+- **Risk**: Max drawdown, volatility, VaR, CVaR
+- **Trade Statistics**: Win rate, profit factor, average trade P&L
+- **Portfolio**: Weights, correlation, diversification ratio
 
 ## 🤝 Contributing
 

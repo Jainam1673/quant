@@ -4,6 +4,12 @@ import duckdb
 import polars as pl
 from pathlib import Path
 from typing import Optional
+from contextlib import contextmanager
+
+from quant.config import config
+from quant.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class Database:
