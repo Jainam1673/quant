@@ -1,0 +1,5 @@
+
+reflex==0.8.14.post1
+yfinance>=0.2.52
+polars>=1.15.0
+duckdb>=1.1.3
