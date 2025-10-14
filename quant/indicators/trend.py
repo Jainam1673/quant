@@ -83,8 +83,10 @@ class MACD(IndicatorBase):
             pl.col("MACD").ewm_mean(span=self.signal_period).alias("MACD_signal"),
         ])
         
+        histogram = pl.col("MACD") - pl.col("MACD_signal")
         df = df.with_columns([
-            (pl.col("MACD") - pl.col("MACD_signal")).alias("MACD_histogram")
+            histogram.alias("MACD_hist"),
+            histogram.alias("MACD_histogram")
         ])
         
         return df

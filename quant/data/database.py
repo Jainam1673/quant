@@ -92,11 +92,39 @@ class Database:
         
         Args:
             df: Polars DataFrame with columns: ticker, timestamp, open, high, low, close, volume
+                Optional column: adjusted_close
         """
-        self.conn.execute("""
-            INSERT OR REPLACE INTO ohlcv 
-            SELECT * FROM df
-        """)
+        required_columns = {"ticker", "timestamp", "open", "high", "low", "close", "volume"}
+        missing = required_columns.difference(df.columns)
+        if missing:
+            raise ValueError(f"Missing required OHLCV columns: {sorted(missing)}")
+
+        if "adjusted_close" not in df.columns:
+            df = df.with_columns(pl.lit(None).cast(pl.Float64).alias("adjusted_close"))
+
+        # Ensure timestamp column is proper datetime for DuckDB compatibility
+        if df["timestamp"].dtype == pl.Utf8:
+            df = df.with_columns(pl.col("timestamp").str.strptime(pl.Datetime, strict=False))
+
+        temp_df = df.select([
+            "ticker",
+            "timestamp",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "adjusted_close",
+        ])
+
+        self.conn.register("temp_df", temp_df)
+        self.conn.execute(
+            """
+            INSERT OR REPLACE INTO ohlcv (ticker, timestamp, open, high, low, close, volume, adjusted_close)
+            SELECT * FROM temp_df
+            """
+        )
+        self.conn.unregister("temp_df")
     
     def get_ohlcv(
         self, 
