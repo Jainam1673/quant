@@ -4,7 +4,10 @@ Quick start guide for developers who want to contribute to or run Quant Dashboar
 
 ## Prerequisites
 
-- **Python 3.11+** (Python 3.11, 3.12, or 3.13)
+## Prerequisites
+
+- **Python 3.13+** (Python 3.13 or higher)
+- **pip** or **uv** (package manager)
 - **Git** for version control
 - **uv** (recommended) or pip for package management
 
@@ -14,14 +17,12 @@ Quick start guide for developers who want to contribute to or run Quant Dashboar
 
 Check your Python version:
 ```bash
-python --version
-# or
-python3 --version
+python --version  # Should be 3.13+ or higher
 ```
 
-If you need to install Python 3.11+:
-- **Ubuntu/Debian**: `sudo apt install python3.11`
-- **macOS**: `brew install python@3.11`
+If you need to install Python 3.13+:
+- **Ubuntu/Debian**: `sudo apt install python3.13`
+- **macOS**: `brew install python@3.13`
 - **Windows**: Download from [python.org](https://www.python.org/downloads/)
 
 ### 2. Install uv (Recommended)

@@ -1,6 +1,11 @@
 # Quant Trading Platform 📊
 
-A **production-ready, full-stack quantitative trading platform** built with Python. Features comprehensive backtesting, portfolio management, risk analytics, and custom strategy building capabilities.
+A **production-ready, f## Installation
+
+### Prerequisites
+
+- Python 3.13 or higher
+- Node.js 16+ (automatically installed by Reflex)stack quantitative trading platform** built with Python. Features comprehensive backtesting, portfolio management, risk analytics, and custom strategy building capabilities.
 
 ## 🌟 Key Features
 
@@ -48,11 +53,11 @@ A **production-ready, full-stack quantitative trading platform** built with Pyth
 - **[Polars](https://pola.rs/)** - Lightning-fast dataframe processing (Rust-based)
 - **[DuckDB](https://duckdb.org/)** - Embedded analytical database for data persistence
 - **[NumPy](https://numpy.org/)** & **[SciPy](https://scipy.org/)** - Numerical computing and optimization
-- **[Python 3.11+](https://www.python.org/)** - Modern Python with type hints
+- **[Python 3.13+](https://www.python.org/)** - Modern Python with type hints
 
 ## 📋 Prerequisites
 
-- Python 3.11 or higher
+- Python 3.13 or higher
 - uv (recommended) or pip
 
 ## 🔧 Installation
