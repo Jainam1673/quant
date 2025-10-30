@@ -1,4 +1,8 @@
-"""Portfolio management and tracking page."""
+'''The portfolio management page.
+
+This module defines the UI for the portfolio dashboard, where users can view
+their current holdings, add new positions, and perform portfolio optimization.
+'''
 
 import reflex as rx
 from quant.state import State
@@ -7,7 +11,18 @@ from components.layout import main_layout
 
 @main_layout
 def portfolio() -> rx.Component:
-    """The portfolio management page."""
+    """Renders the portfolio management page.
+
+    The page includes components for:
+    - Displaying key portfolio metrics (total value, P&L, etc.).
+    - Adding new positions to the portfolio.
+    - Viewing a detailed table of current holdings.
+    - Visualizing portfolio allocation with a pie chart.
+    - Performing portfolio optimization (e.g., Max Sharpe, Min Volatility).
+
+    Returns:
+        A Reflex component representing the portfolio page.
+    """
     return rx.vstack(
         rx.heading("Portfolio Dashboard", size="8", margin_bottom="1rem"),
         

@@ -70,37 +70,33 @@ Navigation sidebar with:
 
 ## Data Flow
 
-1. User enters ticker symbol in input field
-2. `State.set_ticker()` updates state
-3. User clicks "Fetch Data" button
-4. `State.fetch_data()` is called:
-   - Downloads data from yfinance
-   - Processes data with Polars
-   - Updates state with chart and table data
-5. UI reactively updates to show:
-   - Area chart with closing prices
-   - Data table with all metrics
+The application follows a clear, reactive data flow from user input to UI updates:
+
+1.  **User Interaction**: A user interacts with a UI element, such as entering a ticker in an input field or clicking a button.
+2.  **State Update**: The event triggers a method in the `quant.state.State` class. For example, `State.set_ticker` updates the `ticker` variable.
+3.  **Backend Logic**: If the event requires backend processing (e.g., `State.fetch_data`), the state method calls the relevant backend modules.
+    - The `DataManager` fetches data, either from the `Database` cache or from the `yfinance` API.
+    - The data is processed and transformed into a Polars DataFrame.
+4.  **State Synchronization**: The results are stored back in the `State` variables (e.g., `self.data`, `self.chart_data`).
+5.  **UI Reactivity**: The Reflex framework automatically detects the state change and re-renders only the affected UI components, ensuring a fast and efficient update.
 
 ## Tech Stack Details
 
-- **Reflex**: Full-stack Python framework for web apps
-  - Frontend: Compiled to React
-  - Backend: Python FastAPI
-  - State management: Reactive state system
-  
-- **yfinance**: Yahoo Finance API for stock data
-  - Free market data
-  - Historical price data
-  - Company information
+-   **[Reflex](https://reflex.dev/)**: A full-stack Python framework that transpiles the frontend to React and uses a FastAPI backend. It enables building interactive web apps purely in Python.
+-   **[yfinance](https://github.com/ranaroussi/yfinance)**: The primary source for real-time and historical market data from Yahoo Finance.
+-   **[Polars](https://pola.rs/)**: A high-performance, Rust-based DataFrame library used for all data manipulation. It is significantly faster than pandas for many operations.
+-   **[DuckDB](https://duckdb.org/)**: An embedded analytical database used for caching and persisting historical data, backtest results, and trades. Its columnar storage is ideal for financial analysis.
+-   **[SciPy](https://scipy.org/)**: Used for numerical optimization, particularly in the portfolio optimizer.
 
-- **Polars**: Fast DataFrame library
-  - Rust-based performance
-  - Better than pandas for large datasets
-  - Type-safe operations
+## Code Style and Conventions
 
-- **DuckDB**: Embedded analytical database
-  - Currently in requirements but not yet integrated
-  - Future use for data caching/storage
+-   **Type Hinting**: All functions and methods should have clear type hints for all arguments and return values.
+-   **Docstrings**: All public modules, classes, and functions should have a docstring explaining their purpose, arguments, and return values.
+-   **Formatting**: Code is formatted using `black` with a line length of 100.
+-   **Naming**: 
+    - Classes: `PascalCase` (e.g., `BacktestEngine`).
+    - Functions and variables: `snake_case` (e.g., `fetch_data`).
+    - Constants: `UPPER_SNAKE_CASE` (e.g., `INITIAL_CAPITAL`).
 
 ## Development Workflow
 

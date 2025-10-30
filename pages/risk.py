@@ -1,4 +1,9 @@
-"""Risk analytics and management page."""
+"""The risk analysis page for assessing portfolio and strategy risk.
+
+This module defines the UI for the risk analysis dashboard, where users can
+calculate and visualize various risk metrics, including VaR, CVaR, correlation,
+and drawdowns.
+"""
 
 import reflex as rx
 from quant.state import State
@@ -7,7 +12,19 @@ from components.layout import main_layout
 
 @main_layout
 def risk() -> rx.Component:
-    """The risk analytics page."""
+    """Renders the risk analysis page.
+
+    The page includes components for:
+    - Displaying key risk metrics (VaR, CVaR, Sharpe ratio, etc.).
+    - Calculating VaR and CVaR with different methods and parameters.
+    - Viewing a detailed table of various risk metrics.
+    - Analyzing the correlation between assets in the portfolio.
+    - Visualizing the portfolio's historical drawdown.
+    - Setting and managing risk limits.
+
+    Returns:
+        A Reflex component representing the risk analysis page.
+    """
     return rx.vstack(
         rx.heading("Risk Analytics", size="8", margin_bottom="1rem"),
         

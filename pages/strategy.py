@@ -1,4 +1,10 @@
-"""Strategy builder page for creating custom trading strategies."""
+'''The strategy builder page for creating custom trading strategies.
+
+This module provides a user interface for building, configuring, and saving
+custom trading strategies without writing any code. Users can combine various
+technical indicators, define entry and exit rules, and set risk management
+parameters.
+'''
 
 import reflex as rx
 from quant.state import State
@@ -7,7 +13,19 @@ from components.layout import main_layout
 
 @main_layout
 def strategy() -> rx.Component:
-    """The strategy builder page."""
+    """Renders the strategy builder page.
+
+    The page is composed of several sections:
+    - Strategy Configuration: Name and base type of the strategy.
+    - Technical Indicators: A grid of cards to select and configure indicators.
+    - Trading Rules: Text areas for defining entry and exit conditions.
+    - Position Sizing & Risk: Inputs for setting risk management parameters.
+    - Actions: Buttons to save, test, or reset the strategy.
+    - Saved Strategies: A table displaying all saved custom strategies.
+
+    Returns:
+        A Reflex component representing the strategy builder page.
+    """
     return rx.vstack(
         rx.heading("Strategy Builder", size="8", margin_bottom="1rem"),
         rx.text(

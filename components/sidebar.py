@@ -1,9 +1,21 @@
-"""The sidebar component for the application."""
+'''The navigation sidebar component for the application.
+
+This module defines the main navigation sidebar, which provides links to all
+the major pages of the platform.
+'''
 
 import reflex as rx
 
 def sidebar_item(text: str, url: str) -> rx.Component:
-    """A single item in the sidebar."""
+    """Creates a single navigation link for the sidebar.
+
+    Args:
+        text: The text to display for the link.
+        url: The URL that the link should navigate to.
+
+    Returns:
+        A Reflex component representing the sidebar item.
+    """
     return rx.link(
         rx.hstack(rx.text(text)),
         href=url,
@@ -16,7 +28,14 @@ def sidebar_item(text: str, url: str) -> rx.Component:
     )
 
 def sidebar() -> rx.Component:
-    """The sidebar component."""
+    """The main sidebar component.
+
+    This component builds the entire navigation sidebar, including the header,
+    navigation links grouped by section, and a footer.
+
+    Returns:
+        A Reflex component representing the sidebar.
+    """
     return rx.vstack(
         rx.vstack(
             rx.heading("Quant Platform", size="6", weight="bold"),

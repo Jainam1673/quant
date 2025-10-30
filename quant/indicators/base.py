@@ -1,32 +1,57 @@
-"""Base class for technical indicators."""
+"""Base class for all technical indicators.
+
+This module defines the `IndicatorBase` abstract class, which provides a
+standard interface for all technical indicators in the library. By inheriting
+from this class, new indicators can be seamlessly integrated into the platform.
+"""
+
+from abc import ABC, abstractmethod
 
 import polars as pl
-from abc import ABC, abstractmethod
 
 
 class IndicatorBase(ABC):
-    """Base class for all technical indicators."""
-    
+    """Abstract base class for all technical indicators.
+
+    This class defines the common structure for indicators, ensuring they can be
+    applied to a Polars DataFrame in a consistent way.
+
+    Attributes:
+        name (str): The name of the indicator, used as the column name in the DataFrame.
+    """
+
     def __init__(self, name: str):
-        """Initialize indicator.
-        
+        """Initializes the indicator with a name.
+
         Args:
-            name: Name of the indicator
+            name: The name of the indicator (e.g., "SMA_20").
         """
         self.name = name
-    
+
     @abstractmethod
     def calculate(self, df: pl.DataFrame) -> pl.DataFrame:
-        """Calculate indicator values.
-        
+        """Calculates the indicator values.
+
+        This is an abstract method that must be implemented by all subclasses.
+        It should take a DataFrame with OHLCV data and return a new DataFrame
+        with the indicator's column(s) added.
+
         Args:
-            df: DataFrame with OHLCV data
-            
+            df: The input DataFrame with market data.
+
         Returns:
-            DataFrame with indicator columns added
+            A DataFrame with the calculated indicator values.
         """
-        pass
-    
+
     def __call__(self, df: pl.DataFrame) -> pl.DataFrame:
-        """Allow calling indicator as a function."""
+        """Allows the indicator to be called as a function for a fluent API.
+
+        This enables a more readable syntax, like `SMA(20)(df)`.
+
+        Args:
+            df: The input DataFrame.
+
+        Returns:
+            The DataFrame with the indicator calculated.
+        """
         return self.calculate(df)

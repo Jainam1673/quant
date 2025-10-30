@@ -1,4 +1,9 @@
-"""Backtesting page for strategy testing."""
+'''The backtesting page for evaluating trading strategies.
+
+This module defines the user interface for the backtesting feature, allowing
+users to select a ticker and a strategy, run a backtest, and view the
+detailed performance results.
+'''
 
 import reflex as rx
 from quant.state import State
@@ -7,7 +12,18 @@ from components.layout import main_layout
 
 @main_layout
 def backtest() -> rx.Component:
-    """The backtesting page."""
+    """Renders the backtesting page.
+
+    The page includes components for:
+    - Selecting a ticker and a trading strategy.
+    - Running the backtest and displaying a loading state.
+    - Showing performance metrics in summary cards.
+    - Visualizing the portfolio's equity curve over time.
+    - Displaying a detailed table of all trades executed.
+
+    Returns:
+        A Reflex component representing the backtesting page.
+    """
     return rx.vstack(
         rx.heading("Strategy Backtesting", size="8", margin_bottom="1rem"),
         
